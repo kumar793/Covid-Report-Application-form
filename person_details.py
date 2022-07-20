@@ -1,8 +1,8 @@
-import csv
 import pandas as pd
+import mysql.connector
 from tkinter import *
 import PySimpleGUI as sg
-
+conn = mysql.connector.connect(user='root', password='kumar', host='127.0.0.1', database='liveproject',auth_plugin='mysql_native_password')
 class person:
     def __init__(self,name,age,covid_status,family,vacc_status,address):
         self.name = name
@@ -15,12 +15,14 @@ class person:
         sg.Print("name = ",self.name,"\nage = ",self.age,"\ncovid status = ",self.covid_status,"\nfmembers = ","\nvacc_status = ",self.family)
         sg.Print("doorno = ",self.address.doorno,"\nstreetname = ",self.address.streetname,"\narea = ",self.address.area,"\ncity =",self.address.city)
     def data(self):
+        
         info = [str(self.name),self.age,str(self.covid_status),self.family,self.vacc_status,
                 str(self.address.doorno),str(self.address.streetname),str(self.address.area),str(self.address.city)]
-        with open("person.csv",'a') as csvfile:
-            write = csv.writer(csvfile)
-            write.writerow(info)
-            csvfile.close()
+        query = """insert into person values(%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+        cursor = conn.cursor()
+        cursor.execute(query,info) 
+        conn.commit()
+        
 
 class address:
     def __init__(self,doorno,streetname,area,city):
@@ -28,6 +30,8 @@ class address:
         self.streetname = streetname
         self.area = area
         self.city = city
+
+
 
 r = Tk()
 r.title("covid details")
@@ -90,22 +94,23 @@ b = Button(r,text = "submit",command = submit,padx=20,pady=10,font = ("arial",15
 b.grid(column = 2,row=10)
 
 def analytics():
-    df = pd.read_csv("person.csv")
+    df = pd.read_sql_query("select  * from person",conn)
     df = pd.DataFrame(df)
 
     def effectedbyarea():
         
     #how many in city got effected due to covid 
-        sg.Print("no of peope affected in ",e12.get()," = ",df[(df["covid_status"]=="yes" ) & (df["city"]==e12.get() )]["name"].count())
+        sg.Print("no of peope affected in ",e12.get()," = ",df[(df["covid_status"]=="yes" ) & (df["city"]==e12.get() )]["pname"].count())
     def covid_after_vaccination():
-        sg.Print("covid after vaccination  =",df[(df["vaccination_status"]==2) & (df["covid_status"]=="yes" )]["name"].count())
+        sg.Print("covid after vaccination  =",df[(df["vaccination_status"]==2) & (df["covid_status"]=="yes" )]["pname"].count())
     def covid_after_50():
         sg.Print("covid after 50 =",df[(df["covid_status"]=="yes") & (df["age"]>50)]["city"].count())
     def citycount():
         sg.Print("covid in cities =",df["city"].value_counts().sort_values(ascending=True))
     def get_probability():
-        sg.Print("these people have probability =",df[ (df["vaccination_status"] < 2) & (df["covid_status"]=="yes" ) ]["name"].count())
-    
+        sg.Print("these people have probability =",df[ (df["vaccination_status"] < 2) & (df["covid_status"]=="yes" ) ]["pname"].count())
+    def get_data():
+        sg.Print(df)
     r1 = Tk()
     r1.title("analytics menu")
     areaef = Label(r1,text="enter city to check no of peopel effected")
@@ -123,6 +128,8 @@ def analytics():
     b3.pack()
     b4 = Button(r1,text = "get probability",command =get_probability ,padx = 20,pady=10)
     b4.pack()
+    b5 = Button(r1,text = "data",command =get_data ,padx = 20,pady=10)
+    b5.pack()
     r1.mainloop()
 
 b1 = Button(r,text = "Analytics",command =analytics,padx=20,pady=10,font = ("arial",15))
