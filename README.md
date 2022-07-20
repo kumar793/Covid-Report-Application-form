@@ -10,5 +10,4 @@ pandas,
 pysimplegui,
 tkinter.
 
-note:-
-on coming projects i will try do do this with sql.
+Th esecond file is tye same procedure but this time i take database connection with mysql using mysql connector.
