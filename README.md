@@ -1,13 +1,21 @@
-# Covid-Report-Application-form
-hello everyone, 
-this is a personal project for revising python , gui and some analytics.
-Here i just created a application which takes the input on sibmitting and stores in csv file .
-after that we can do some analytical operations on that asn see the output.
+# Application Form with Exploratory Data Analysis
 
-libraries used:
-csv,
-pandas,
-pysimplegui,
-tkinter.
+## Overview
 
-Th esecond file is tye same procedure but this time i take database connection with mysql using mysql connector.
+This project implements an application form using Python with libraries such as CSV, Pandas, PySimpleGUI, and Tkinter. The application collects user input through a graphical interface, stores the data in a CSV file, and performs Exploratory Data Analysis (EDA) on the collected data.
+
+## Features
+
+- User-friendly graphical interface for data input
+- Data storage in CSV format
+- Exploratory Data Analysis (EDA) on the collected data
+- Visualization of data insights
+
+## Installation
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone https://github.com/yourusername/application-form-eda.git
+   cd application-form-eda
+
